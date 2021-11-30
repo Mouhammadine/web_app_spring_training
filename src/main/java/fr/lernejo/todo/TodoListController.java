@@ -3,21 +3,22 @@ package fr.lernejo.todo;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RestController
 @RequestMapping(path = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
 public class TodoListController {
-    private final List<Todo> todos = new ArrayList<>();
+    private final TodoRepository repository;
+
+    public TodoListController(TodoRepository repository) {
+        this.repository = repository;
+    }
 
     @PostMapping("todo")
-    public void addElement(@RequestBody Todo todo) {
-        this.todos.add(todo);
+    public void addElement(@RequestBody TodoEntity todo) {
+        this.repository.save(todo);
     }
 
     @GetMapping("todo")
-    public List<Todo> list() {
-        return this.todos;
+    public Iterable<TodoEntity> list() {
+        return this.repository.findAll();
     }
 }
